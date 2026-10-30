@@ -255,6 +255,16 @@ test('reset clears the queue, and only clears the catalog when asked', async () 
   assert.equal(afterAll.json.products, 0)
 })
 
+test('an absent pagination parameter falls back instead of clamping to 1', async () => {
+  const { clampInt, clampNumber } = await import('../lib/http.js')
+  assert.equal(clampInt(null, 20, 1, 50), 20, 'Number(null) is 0, not NaN')
+  assert.equal(clampInt(undefined, 100, 1, 500), 100)
+  assert.equal(clampInt('', 50, 1, 200), 50)
+  assert.equal(clampInt('5', 20, 1, 50), 5)
+  assert.equal(clampInt('999', 20, 1, 50), 50)
+  assert.equal(clampNumber(null, 0.55, 0.1, 0.95), 0.55)
+})
+
 test('secrets are stored with restrictive permissions on POSIX', async () => {
   const file = path.join(temp, 'kefu', 'config.json')
   const stats = await fs.stat(file)

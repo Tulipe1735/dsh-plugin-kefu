@@ -125,6 +125,21 @@ await fetch('http://127.0.0.1:54205/plugins/dsh-plugin-kefu/channels/bridge/ack'
 
 ---
 
+## 7×24 守护进程（bot 模式）
+
+面板是人坐的工位；`daemon/` 是守在后台的 bot。它不依赖 DSH、不需要人点，直连 DeepSeek API，把同一套检索/决策/复检逻辑跑成一个常驻 HTTP 服务：
+
+```powershell
+$env:KEFU_TOKEN = "随机串"; $env:DEEPSEEK_API_KEY = "sk-..."; $env:KEFU_MODE = "auto"
+node daemon/server.js
+```
+
+任何采集端只要会说三个接口（`/push`、`/pull`、`/ack`）就能把消息喂进来、把回复取走。详见 [daemon/README.md](daemon/README.md)。
+
+> 同一份数据目录**不要**让面板和守护进程同时写：存储是整份 JSON 落盘，会互相覆盖。常驻时以守护进程为准。
+
+---
+
 ## 商品表格式
 
 支持 `.csv` / `.tsv` / `.json` / Markdown 表格。表头中英文都认：
