@@ -20,6 +20,7 @@ import { decide, segmentReply } from './lib/reply.js'
 import {
   ackOutbound,
   appendMessage,
+  clearConversations,
   conversationId,
   deleteProduct,
   getConversation,
@@ -662,6 +663,15 @@ async function handleRequest(env, req, res) {
         lastError: status.lastError ?? null,
         settings: config.llm,
       })
+      return
+    }
+
+    if (method === 'POST' && action === 'reset') {
+      const body = await readJsonBody(req)
+      const catalog = body.catalog === true
+      if (catalog) await replaceProducts([])
+      const removed = await clearConversations()
+      sendJson(res, 200, { ok: true, conversations: removed, catalogCleared: catalog })
       return
     }
 

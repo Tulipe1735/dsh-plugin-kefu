@@ -88,6 +88,14 @@ window.__ModuleLoader__.load({
       modelReady: zh ? '模型可用' : 'Model available',
       modelUnavailable: zh ? '没有 llm 服务' : 'No llm service',
       modelInUse: zh ? '当前使用' : 'In use',
+      dataTitle: zh ? '数据' : 'Data',
+      dataHint: zh
+        ? '清空只影响本机：会话、消息与发件箱清空后不可恢复；商品目录默认保留，换店铺时才需要一起清。'
+        : 'Clearing is local: conversations, messages and the outbox cannot be recovered. The catalog is kept unless you clear it too.',
+      clearQueue: zh ? '清空会话队列' : 'Clear conversations',
+      clearAll: zh ? '清空全部（含商品）' : 'Clear everything',
+      confirmQueue: zh ? '清空所有会话与发件箱？此操作不可恢复。' : 'Clear all conversations and the outbox? This cannot be undone.',
+      confirmAll: zh ? '清空商品目录 + 所有会话？此操作不可恢复。' : 'Clear the product catalog and all conversations? This cannot be undone.',
       redLines: zh ? '平台红线（不可关闭）' : 'Platform red lines (cannot be disabled)',
       triggerLabels: {
         image: zh ? '买家发来图片' : 'Buyer sent an image',
@@ -770,6 +778,18 @@ window.__ModuleLoader__.load({
           }
         }
 
+        const resetData = async (catalog) => {
+          const question = catalog ? t.confirmAll : t.confirmQueue
+          if (typeof window !== 'undefined' && typeof window.confirm === 'function' && !window.confirm(question)) return
+          try {
+            const result = await api('reset', { body: { catalog } })
+            setToast(`${t.saved} · ${result.conversations}${zh ? ' 个会话' : ' conversations'}`)
+            await load()
+          } catch (error) {
+            setToast(error.message)
+          }
+        }
+
         return h(
           'div',
           { className: 'dsh-kefu-scroll' },
@@ -883,6 +903,14 @@ window.__ModuleLoader__.load({
             ),
           ),
           h('div', { className: 'dsh-kefu-row', style: { paddingBottom: 16 } }, h(Button, { primary: true, onClick: () => void save(), disabled: busy }, t.save)),
+          h('div', { className: 'dsh-kefu-card' },
+            h('div', { className: 'dsh-kefu-card-title', style: { marginBottom: 6 } }, t.dataTitle),
+            h('div', { className: 'dsh-kefu-small', style: { marginBottom: 6 } }, t.dataHint),
+            h('div', { className: 'dsh-kefu-row' },
+              h(Button, { onClick: () => void resetData(false) }, t.clearQueue),
+              h(Button, { onClick: () => void resetData(true) }, t.clearAll),
+            ),
+          ),
         )
       }
 

@@ -238,6 +238,23 @@ test('the draft tool mirrors the engine', async () => {
   assert.equal(output.citations[0].field, 'price')
 })
 
+test('reset clears the queue, and only clears the catalog when asked', async () => {
+  const before = await call({ method: 'GET', path: `${API}status` })
+  assert.ok(before.json.stats.total > 0)
+  assert.ok(before.json.products > 0)
+
+  const queueOnly = await call({ method: 'POST', path: `${API}reset`, body: { catalog: false } })
+  assert.equal(queueOnly.json.conversations > 0, true)
+  const afterQueue = await call({ method: 'GET', path: `${API}status` })
+  assert.equal(afterQueue.json.stats.total, 0)
+  assert.equal(afterQueue.json.products, before.json.products, 'catalog survives a queue reset')
+
+  const everything = await call({ method: 'POST', path: `${API}reset`, body: { catalog: true } })
+  assert.equal(everything.json.catalogCleared, true)
+  const afterAll = await call({ method: 'GET', path: `${API}status` })
+  assert.equal(afterAll.json.products, 0)
+})
+
 test('secrets are stored with restrictive permissions on POSIX', async () => {
   const file = path.join(temp, 'kefu', 'config.json')
   const stats = await fs.stat(file)

@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-kefu",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "type": "module",
   "description": "Open-source e-commerce customer-service desk for DeepSeek Harness: learn your product catalog, answer buyers only from evidence, escalate when unsure. 千牛/淘宝与京麦/京东官方开放平台通道 + 本地桥接协议。",

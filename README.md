@@ -168,7 +168,18 @@ git remote add origin git@github.com:<you>/dsh-plugin-kefu.git
 git push -u origin main
 ```
 
-社区插件市场（dshmarket）按 npm 包名索引带 `dsh.bundle` 的包，发布后即可被搜到。
+社区插件市场（dshmarket）**不抓 npm**：它每次打开只读精选列表 `https://awesome-dsh-plugin.com/plugins.json`，条目来自 `awesome-dsh-plugin/awesome-dsh-plugin` 仓库的 `data/plugins/*.yml`。所以发布 npm 只让「按名字安装」可用，要出现在市场里，还得往那份精选列表提一个 PR（要求：`dsh.bundle` manifest、真实代码、仓库满 1 天、仓库带 `dsh-plugin` topic）。
+
+## 数据与备份
+
+全部数据在 `~/.dsh/kefu/`（`DSH_HOME` 存在时取它）：`config.json`（0600，含平台凭证）、`kb/products.json`、`conversations.json`、`outbox.json`。备份就是复制这个目录。
+
+设置页底部的 **数据** 卡片可以清空：
+
+- **清空会话队列**：清掉会话、消息与发件箱，商品目录保留（换班次常用）；
+- **清空全部（含商品）**：连商品目录一起清（换店铺时用）。
+
+也可以直接调接口 `POST /plugins/dsh-plugin-kefu/api/reset`，body `{"catalog": true}` 才会连商品一起清。
 
 ## 已知限制
 
