@@ -1,0 +1,60 @@
+{
+  "name": "dsh-plugin-kefu",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "description": "Open-source e-commerce customer-service desk for DeepSeek Harness: learn your product catalog, answer buyers only from evidence, escalate when unsure. 千牛/淘宝与京麦/京东官方开放平台通道 + 本地桥接协议。",
+  "license": "MIT",
+  "keywords": [
+    "deepseek-harness",
+    "dsh-plugin",
+    "customer-service",
+    "ecommerce",
+    "qianniu",
+    "taobao",
+    "jingmai",
+    "jd",
+    "kefu",
+    "知识库",
+    "客服"
+  ],
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "lib/**",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "README.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-theme",
+        "@deepseek-ai/dsh-client-locale"
+      ]
+    }
+  },
+  "engines": {
+    "dsh": ">=0.2.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  }
+}
